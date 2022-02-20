@@ -1,0 +1,29 @@
+{
+  "name": "bakery-oms",
+  "version": "1.0.0",
+  "description": "A console/terminal application that helps bakeries manage its products and serve orders",
+  "main": "bin/index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashvin-umaharan/ibm-coding-challenge-2022.git"
+  },
+  "author": "Ashvin Umaharan",
+  "license": "GPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/ashvin-umaharan/ibm-coding-challenge-2022/issues"
+  },
+  "homepage": "https://github.com/ashvin-umaharan/ibm-coding-challenge-2022#readme",
+  "bin": {
+    "bakery-oms": "./bin/index.js"
+  },
+  "dependencies": {
+    "yargs": "^17.3.1"
+  },
+  "devDependencies" : {
+    "mocha": "^9.2.1",
+    "chai": "^4.3.6"
+  }
+}
