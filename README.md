@@ -12,6 +12,11 @@ However, this project should still be able to be run without issues with the fol
 * `Node.js` v17.x (and newer)
 * `npm` v8.1.x (and newer)
 
+### Third-Party Packages
+The following third-party `npm` packages have been utilised:
+* [`chalk`](https://github.com/chalk/chalk)
+* [`node-csv`](https://github.com/adaltas/node-csv)
+
 ## Installation
 
 ### 1. Clone project using `git`
