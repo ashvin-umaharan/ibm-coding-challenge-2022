@@ -1,19 +1,68 @@
 #!/usr/bin/env node
 
-const yargs = require("yargs");
+import * as readline from 'node:readline/promises'
+import { stdin as input, stdout as output } from 'node:process'
+import chalk from 'chalk'
+import fs from 'fs'
+import { parse } from 'csv-parse'
+import Product from '../model/Product.js'
 
-const options = yargs
- .usage("Usage:\nload <csv-file>\ninventory\norder <code-1> <quantity> <code-2> <quantity> ...")
- .option("load", { alias: "l", describe: "A CSV file containing product code, count of products in package, and price of package", type: "string" })
- .option("inventory", { alias: "i", describe: "List all products currently in the inventory" })
- .option("order", { alias: "o", describe: "Generate a fulfillment for an order specified like <code-1> <quantity> <code-2> <quantity> ... that minimises the number of packs shipped", type: "string" })
- .argv;
-
-function load_products(){
-    return
+async function loadProducts (filePath) {
+  try {
+    const records = []
+    const parser = fs
+      .createReadStream(filePath)
+      .pipe(parse({
+        columns: true
+      }))
+    for await (const record of parser) {
+      const newProduct = new Product(record)
+      records.push(newProduct)
+    }
+    return records
+  } catch (err) {
+    console.error(err)
+  }
 }
 
+async function run () {
+  const rl = readline.createInterface({ input, output })
 
-module.exports = {
-    load_products
+  let didQuit = false
+
+  let inventoryData = null
+
+  while (!didQuit) {
+    const command = await rl.question('> ')
+    switch (command) {
+      case 'inventory':
+        if (inventoryData === null) {
+          console.log(chalk.yellow('The bakery is empty'))
+        } else {
+          console.log(inventoryData)
+        }
+        break
+
+      case 'quit':
+        console.log(chalk.grey('Closing program...'))
+        didQuit = true
+        rl.close()
+        break
+
+      default:
+        if (command.startsWith('load ')) {
+          inventoryData = await loadProducts(command.replace('load', '').trim())
+          console.log(chalk.green('Loaded items successfully'))
+        } else {
+          console.log(chalk.red('Invalid command'))
+        }
+        break
+    }
+  }
+}
+
+run()
+
+export {
+  loadProducts
 }

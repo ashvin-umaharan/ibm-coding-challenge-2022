@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A console/terminal application that helps bakeries manage its products and serve orders",
   "main": "bin/index.js",
+  "type": "module",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha"
   },
@@ -20,10 +21,11 @@
     "bakery-oms": "./bin/index.js"
   },
   "dependencies": {
-    "yargs": "^17.3.1"
+    "chalk": "^5.0.0",
+    "csv": "^6.0.5"
   },
   "devDependencies" : {
-    "mocha": "^9.2.1",
-    "chai": "^4.3.6"
+    "mocha": "*",
+    "chai": "*"
   }
 }
