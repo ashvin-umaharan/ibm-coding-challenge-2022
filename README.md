@@ -2,6 +2,16 @@
 
 This is my solution for a coding challenge presented by IBM Garage as part of their graduate hiring process.
 
+## Requirements
+
+This is a Node.js CLI application, therefore it requires `Node.js` and `npm` to be installed. This project was developed using the following versions:
+* `Node.js` v17.5.0
+* `npm` v8.5.1
+
+However, this project should still be able to be run without issues with the following versions:
+* `Node.js` v17.x (and newer)
+* `npm` v8.1.x (and newer)
+
 ## Installation
 
 ### 1. Clone project using `git`
