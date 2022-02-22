@@ -19,7 +19,7 @@ describe('1. Load Products functionality', function () {
       expect(bakeryOms.fileExists('../bin/test_file.csv')).to.equal(false)
     })
     it('correctly detecting a valid file path', function () {
-      expect(bakeryOms.fileExists('/Users/ashvinumaharan/Documents/ibm-coding-challenge-2022/test/test_file_invalid.csv')).to.equal(true)
+      expect(bakeryOms.fileExists('test/test_file.csv')).to.equal(true)
     })
   })
 
@@ -28,20 +28,20 @@ describe('1. Load Products functionality', function () {
       expect(typeof bakeryOms.loadProducts).to.equal('function')
     })
     it('should reject an invalid CSVs with inconsistent delimiters', async () => {
-      await expect(bakeryOms.loadProducts('/Users/ashvinumaharan/Documents/ibm-coding-challenge-2022/test/test_file_invalid.csv')).to.be.rejected
+      await expect(bakeryOms.loadProducts('test/test_file_invalid.csv')).to.be.rejected
     })
     it('should reject a valid CSV with columns greater than or less than 3', async () => {
-      await expect(bakeryOms.loadProducts('/Users/ashvinumaharan/Documents/ibm-coding-challenge-2022/test/test_file_missing_column.csv')).to.be.rejected
+      await expect(bakeryOms.loadProducts('test/test_file_missing_column.csv')).to.be.rejected
     })
     it('should accept a valid CSV with different column names', async () => {
-      await expect(bakeryOms.loadProducts('/Users/ashvinumaharan/Documents/ibm-coding-challenge-2022/test/test_file_diff_column_names.csv')).to.eventually.deep.equal([
+      await expect(bakeryOms.loadProducts('test/test_file_diff_column_names.csv')).to.eventually.deep.equal([
         new Product({ code: 'VS', count: '3', price: '699' }),
         new Product({ code: 'VS', count: '5', price: '899' }),
         new Product({ code: 'BM', count: '2', price: '995' })
       ])
     })
     it('should accept a valid CSV with expected column names', async () => {
-      await expect(bakeryOms.loadProducts('/Users/ashvinumaharan/Documents/ibm-coding-challenge-2022/test/test_file.csv')).to.eventually.deep.equal([
+      await expect(bakeryOms.loadProducts('test/test_file.csv')).to.eventually.deep.equal([
         new Product({ code: 'VS', count: '3', price: '699' }),
         new Product({ code: 'VS', count: '5', price: '899' }),
         new Product({ code: 'BM', count: '2', price: '995' })
