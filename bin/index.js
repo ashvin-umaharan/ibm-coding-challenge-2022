@@ -56,21 +56,75 @@ import fs from 'fs'
 import { parse } from 'csv-parse'
 import Product from '../model/Product.js'
 
+function fileExists (filePath) {
+  if (fs.existsSync(filePath)) {
+    return true
+  } else {
+    if (process.env.NODE_ENV !== 'test') {
+      console.error(chalk.red('File not found'))
+    }
+    return false
+  }
+}
+
 async function loadProducts (filePath) {
+  const records = []
   try {
-    const records = []
     const parser = fs
       .createReadStream(filePath)
       .pipe(parse({
-        columns: true
+        columns: ['code', 'count', 'price'],
+        from_line: 2,
+        skip_empty_lines: true,
+        trim: true
       }))
     for await (const record of parser) {
-      const newProduct = new Product(record)
-      records.push(newProduct)
+      if (Object.keys(record).length === 3) {
+        const newProduct = new Product(record)
+        records.push(newProduct)
+      } else {
+        throw new Error('Number of columns is not equal to 3')
+      }
     }
     return records
   } catch (err) {
-    console.error(err)
+    if (process.env.NODE_ENV !== 'test') {
+      console.error(chalk.red(`File has formatting errors. ${err}`))
+      console.error(chalk.yellow('Please provide a file where each line has the following format: '))
+      console.error(chalk.yellow('<code>,<count>,<price>'))
+    } else {
+      throw err
+    }
+  }
+}
+
+function showInventory (inventory) {
+  if (inventory === null) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.log(chalk.yellow('The bakery is empty'))
+    } else {
+      return 'The bakery is empty'
+    }
+  } else {
+    const uniqueProductCodes = [...new Set(inventory.map(product => product.code))]
+    const consolidatedInventory = uniqueProductCodes.reduce(function (options, uniqueProductCode) {
+      options[uniqueProductCode] = []
+      return options
+    }, {})
+    uniqueProductCodes.forEach((code) => {
+      inventory.forEach((entry) => {
+        if (entry.code === code) {
+          consolidatedInventory[code].push(`${entry.count} x $${entry.price / 100.00}`)
+        }
+      })
+    })
+    if (process.env.NODE_ENV !== 'test') {
+      for (const [productCode, options] of Object.entries(consolidatedInventory)) {
+        console.log(chalk.blue(`${productCode}, options: ${options.join(', ')}`))
+      }
+    } else {
+      return consolidatedInventory
+    }
   }
 }
 
@@ -85,11 +139,7 @@ async function run () {
     const command = await rl.question('> ')
     switch (command) {
       case 'inventory':
-        if (inventoryData === null) {
-          console.log(chalk.yellow('The bakery is empty'))
-        } else {
-          console.log(inventoryData)
-        }
+        showInventory(inventoryData)
         break
 
       case 'quit':
@@ -100,10 +150,16 @@ async function run () {
 
       default:
         if (command.startsWith('load ')) {
-          inventoryData = await loadProducts(command.replace('load', '').trim())
-          console.log(chalk.green('Loaded items successfully'))
+          const filePath = command.replace('load', '').trim()
+          if (fileExists(filePath)) {
+            const data = await loadProducts(filePath)
+            if (data !== undefined) {
+              inventoryData = data
+              console.log(chalk.green('Loaded items successfully'))
+            }
+          }
         } else {
-          console.log(chalk.red('Invalid command'))
+          console.error(chalk.red('Invalid command'))
         }
         break
     }
@@ -113,5 +169,7 @@ async function run () {
 run()
 
 export {
-  loadProducts
+  loadProducts,
+  fileExists,
+  showInventory
 }
