@@ -19,7 +19,7 @@ However, this project should still be able to be run without issues with the fol
 ### Third-Party Packages
 The following third-party `npm` packages have been utilised:
 * [`chalk`](https://github.com/chalk/chalk) ![npms.io (final)](https://img.shields.io/npms-io/final-score/chalk) ![node-current](https://img.shields.io/node/v/chalk) ![npm](https://img.shields.io/npm/v/chalk)
-* [`node-csv`](https://github.com/adaltas/node-csv) ![npms.io (final)](https://img.shields.io/npms-io/final-score/csv-parser) ![node-current](https://img.shields.io/node/v/csv-parser) ![npm](https://img.shields.io/npm/v/csv-parser) 
+* [`csv-parse`](https://github.com/adaltas/node-csv/tree/master/packages/csv-parse) ![npms.io (final)](https://img.shields.io/npms-io/final-score/csv-parse) ![node-current](https://img.shields.io/node/v/csv-parse) ![npm](https://img.shields.io/npm/v/csv-parse) 
 
 ## Installation
 
