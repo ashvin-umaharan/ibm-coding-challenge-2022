@@ -25,7 +25,7 @@ The following third-party `npm` packages have been utilised:
 
 ### 1. Clone project using `git`
 ```sh
-$ git clone
+$ git clone https://github.com/ashvin-umaharan/ibm-coding-challenge-2022.git
 ```
 ### 2. Navigate to cloned project folder (if applicable)
 ```sh
