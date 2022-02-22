@@ -37,14 +37,24 @@ describe('1. Load Products functionality', function () {
       await expect(bakeryOms.loadProducts('test/test_file_diff_column_names.csv')).to.eventually.deep.equal([
         new Product({ code: 'VS', count: '3', price: '699' }),
         new Product({ code: 'VS', count: '5', price: '899' }),
-        new Product({ code: 'BM', count: '2', price: '995' })
+        new Product({ code: 'BM', count: '2', price: '995' }),
+        new Product({ code: 'BM', count: '5', price: '1695' }),
+        new Product({ code: 'BM', count: '8', price: '2495' }),
+        new Product({ code: 'CR', count: '3', price: '595' }),
+        new Product({ code: 'CR', count: '5', price: '995' }),
+        new Product({ code: 'CR', count: '9', price: '1699' })
       ])
     })
     it('should accept a valid CSV with expected column names', async () => {
       await expect(bakeryOms.loadProducts('test/test_file.csv')).to.eventually.deep.equal([
         new Product({ code: 'VS', count: '3', price: '699' }),
         new Product({ code: 'VS', count: '5', price: '899' }),
-        new Product({ code: 'BM', count: '2', price: '995' })
+        new Product({ code: 'BM', count: '2', price: '995' }),
+        new Product({ code: 'BM', count: '5', price: '1695' }),
+        new Product({ code: 'BM', count: '8', price: '2495' }),
+        new Product({ code: 'CR', count: '3', price: '595' }),
+        new Product({ code: 'CR', count: '5', price: '995' }),
+        new Product({ code: 'CR', count: '9', price: '1699' })
       ])
     })
   })
@@ -60,10 +70,16 @@ describe('1. Load Products functionality', function () {
       expect(bakeryOms.showInventory([
         new Product({ code: 'VS', count: '3', price: '699' }),
         new Product({ code: 'VS', count: '5', price: '899' }),
-        new Product({ code: 'BM', count: '2', price: '995' })
+        new Product({ code: 'BM', count: '2', price: '995' }),
+        new Product({ code: 'BM', count: '5', price: '1695' }),
+        new Product({ code: 'BM', count: '8', price: '2495' }),
+        new Product({ code: 'CR', count: '3', price: '595' }),
+        new Product({ code: 'CR', count: '5', price: '995' }),
+        new Product({ code: 'CR', count: '9', price: '1699' })
       ])).to.deep.equal({
         VS: ['3 x $6.99', '5 x $8.99'],
-        BM: ['2 x $9.95']
+        BM: ['2 x $9.95', '5 x $16.95', '8 x $24.95'],
+        CR: ['3 x $5.95', '5 x $9.95', '9 x $16.99']
       })
     })
   })
