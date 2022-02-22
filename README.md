@@ -1,5 +1,9 @@
 # ibm-coding-challenge-2022
 
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
+
+
 This is my solution for a coding challenge presented by IBM Garage as part of their graduate hiring process.
 
 ## Requirements
@@ -14,8 +18,8 @@ However, this project should still be able to be run without issues with the fol
 
 ### Third-Party Packages
 The following third-party `npm` packages have been utilised:
-* [`chalk`](https://github.com/chalk/chalk)
-* [`node-csv`](https://github.com/adaltas/node-csv)
+* [`chalk`](https://github.com/chalk/chalk) ![npms.io (final)](https://img.shields.io/npms-io/final-score/chalk) ![node-current](https://img.shields.io/node/v/chalk) ![npm](https://img.shields.io/npm/v/chalk)
+* [`node-csv`](https://github.com/adaltas/node-csv) ![npms.io (final)](https://img.shields.io/npms-io/final-score/csv-parser) ![node-current](https://img.shields.io/node/v/csv-parser) ![npm](https://img.shields.io/npm/v/csv-parser) 
 
 ## Installation
 
