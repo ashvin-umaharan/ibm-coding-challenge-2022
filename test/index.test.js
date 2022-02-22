@@ -35,26 +35,48 @@ describe('1. Load Products functionality', function () {
     })
     it('should accept a valid CSV with different column names', async () => {
       await expect(bakeryOms.loadProducts('test/test_file_diff_column_names.csv')).to.eventually.deep.equal([
-        new Product({ code: 'VS', count: '3', price: '699' }),
-        new Product({ code: 'VS', count: '5', price: '899' }),
-        new Product({ code: 'BM', count: '2', price: '995' }),
-        new Product({ code: 'BM', count: '5', price: '1695' }),
-        new Product({ code: 'BM', count: '8', price: '2495' }),
-        new Product({ code: 'CR', count: '3', price: '595' }),
-        new Product({ code: 'CR', count: '5', price: '995' }),
-        new Product({ code: 'CR', count: '9', price: '1699' })
+        { code: 'VS', count: '3', price: '699' },
+        { code: 'VS', count: '5', price: '899' },
+        { code: 'BM', count: '2', price: '995' },
+        { code: 'BM', count: '5', price: '1695' },
+        { code: 'BM', count: '8', price: '2495' },
+        { code: 'CR', count: '3', price: '595' },
+        { code: 'CR', count: '5', price: '995' },
+        { code: 'CR', count: '9', price: '1699' }
       ])
     })
     it('should accept a valid CSV with expected column names', async () => {
       await expect(bakeryOms.loadProducts('test/test_file.csv')).to.eventually.deep.equal([
-        new Product({ code: 'VS', count: '3', price: '699' }),
-        new Product({ code: 'VS', count: '5', price: '899' }),
-        new Product({ code: 'BM', count: '2', price: '995' }),
-        new Product({ code: 'BM', count: '5', price: '1695' }),
-        new Product({ code: 'BM', count: '8', price: '2495' }),
-        new Product({ code: 'CR', count: '3', price: '595' }),
-        new Product({ code: 'CR', count: '5', price: '995' }),
-        new Product({ code: 'CR', count: '9', price: '1699' })
+        { code: 'VS', count: '3', price: '699' },
+        { code: 'VS', count: '5', price: '899' },
+        { code: 'BM', count: '2', price: '995' },
+        { code: 'BM', count: '5', price: '1695' },
+        { code: 'BM', count: '8', price: '2495' },
+        { code: 'CR', count: '3', price: '595' },
+        { code: 'CR', count: '5', price: '995' },
+        { code: 'CR', count: '9', price: '1699' }
+      ])
+    })
+  })
+
+  context('consolidateProducts()', function () {
+    it('should be of type function', function () {
+      expect(typeof bakeryOms.consolidateProducts).to.equal('function')
+    })
+    it('correctly groups packaging options for each product', function () {
+      expect(bakeryOms.consolidateProducts([
+        { code: 'VS', count: '3', price: '699' },
+        { code: 'VS', count: '5', price: '899' },
+        { code: 'BM', count: '2', price: '995' },
+        { code: 'BM', count: '5', price: '1695' },
+        { code: 'BM', count: '8', price: '2495' },
+        { code: 'CR', count: '3', price: '595' },
+        { code: 'CR', count: '5', price: '995' },
+        { code: 'CR', count: '9', price: '1699' }
+      ])).to.deep.equal([
+        new Product('VS', [['3', '699'], ['5', '899']]),
+        new Product('BM', [['2', '995'], ['5', '1695'], ['8', '2495']]),
+        new Product('CR',[['3', '595'], ['5', '995'], ['9', '1699']])
       ])
     })
   })
@@ -66,21 +88,13 @@ describe('1. Load Products functionality', function () {
     it('should show that the bakery is empty when the inventory is empty', function () {
       expect(bakeryOms.showInventory(null)).to.deep.equal('The bakery is empty')
     })
-    it('correctly grouping packaging options for each product', function () {
+    it('should show that the bakery is empty when the inventory is empty', function () {
       expect(bakeryOms.showInventory([
-        new Product({ code: 'VS', count: '3', price: '699' }),
-        new Product({ code: 'VS', count: '5', price: '899' }),
-        new Product({ code: 'BM', count: '2', price: '995' }),
-        new Product({ code: 'BM', count: '5', price: '1695' }),
-        new Product({ code: 'BM', count: '8', price: '2495' }),
-        new Product({ code: 'CR', count: '3', price: '595' }),
-        new Product({ code: 'CR', count: '5', price: '995' }),
-        new Product({ code: 'CR', count: '9', price: '1699' })
-      ])).to.deep.equal({
-        VS: ['3 x $6.99', '5 x $8.99'],
-        BM: ['2 x $9.95', '5 x $16.95', '8 x $24.95'],
-        CR: ['3 x $5.95', '5 x $9.95', '9 x $16.99']
-      })
+        new Product('VS', [['3', '699'], ['5', '899']]),
+        new Product('BM', [['2', '995'], ['5', '1695'], ['8', '2495']]),
+        new Product('CR',[['3', '595'], ['5', '995'], ['9', '1699']])
+      ])).to.deep.equal(
+        `VS, options: 3 x $6.99, 5 x $8.99\nBM, options: 2 x $9.95, 5 x $16.95, 8 x $24.95\nCR, options: 3 x $5.95, 5 x $9.95, 9 x $16.99\n`)
     })
   })
 })

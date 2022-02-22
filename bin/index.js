@@ -80,8 +80,7 @@ async function loadProducts (filePath) {
       }))
     for await (const record of parser) {
       if (Object.keys(record).length === 3) {
-        const newProduct = new Product(record)
-        records.push(newProduct)
+        records.push(record)
       } else {
         throw new Error('Number of columns is not equal to 3')
       }
@@ -98,6 +97,26 @@ async function loadProducts (filePath) {
   }
 }
 
+function consolidateProducts (rawInventoryData) {
+  const inventory = []
+  const uniqueProductCodes = [...new Set(rawInventoryData.map(product => product.code))]
+  const consolidatedInventory = uniqueProductCodes.reduce(function (options, uniqueProductCode) {
+    options[uniqueProductCode] = []
+    return options
+  }, {})
+  uniqueProductCodes.forEach((code) => {
+    rawInventoryData.forEach((entry) => {
+      if (entry.code === code) {
+        consolidatedInventory[code].push([entry.count, entry.price])
+      }
+    })
+  })
+  for (const [productCode, options] of Object.entries(consolidatedInventory)) {
+    inventory.push(new Product(productCode, options))
+  }
+  return inventory
+}
+
 function showInventory (inventory) {
   if (inventory === null) {
     if (process.env.NODE_ENV !== 'test') {
@@ -106,24 +125,16 @@ function showInventory (inventory) {
       return 'The bakery is empty'
     }
   } else {
-    const uniqueProductCodes = [...new Set(inventory.map(product => product.code))]
-    const consolidatedInventory = uniqueProductCodes.reduce(function (options, uniqueProductCode) {
-      options[uniqueProductCode] = []
-      return options
-    }, {})
-    uniqueProductCodes.forEach((code) => {
-      inventory.forEach((entry) => {
-        if (entry.code === code) {
-          consolidatedInventory[code].push(`${entry.count} x $${entry.price / 100.00}`)
-        }
-      })
-    })
     if (process.env.NODE_ENV !== 'test') {
-      for (const [productCode, options] of Object.entries(consolidatedInventory)) {
-        console.log(chalk.blue(`${productCode}, options: ${options.join(', ')}`))
-      }
+      inventory.forEach((product) => {
+        console.log(chalk.blue(`${product.code}, options: ${product.packagingOptions.map((option) => `${option[0]} x $${option[1] / 100.00}`).join(', ')}`))
+      })
     } else {
-      return consolidatedInventory
+      let output = ''
+      inventory.forEach((product) => {
+        output += `${product.code}, options: ${product.packagingOptions.map((option) => `${option[0]} x $${option[1] / 100.00}`).join(', ')}\n`
+      })
+      return output
     }
   }
 }
@@ -154,7 +165,7 @@ async function run () {
           if (fileExists(filePath)) {
             const data = await loadProducts(filePath)
             if (data !== undefined) {
-              inventoryData = data
+              inventoryData = consolidateProducts(data)
               console.log(chalk.green('Loaded items successfully'))
             }
           }
@@ -169,7 +180,8 @@ async function run () {
 run()
 
 export {
-  loadProducts,
   fileExists,
+  loadProducts,
+  consolidateProducts,
   showInventory
 }

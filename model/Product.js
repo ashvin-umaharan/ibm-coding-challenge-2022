@@ -2,21 +2,8 @@
 'use strict'
 
 export default class Product {
-  // constructor (code, count, price) {
-  //   this.code = code
-  //   this.count = count
-  //   this.price = price
-  // }
-
-  constructor (object) {
-    this.code = object.code
-    this.count = object.count
-    this.price = object.price
+  constructor (code, packagingOptions) {
+    this.code = code
+    this.packagingOptions = packagingOptions
   }
-
-  // set price (price) { this.price = price }
-
-  // get price () {
-  //   return this.price / 100.00
-  // }
 }
