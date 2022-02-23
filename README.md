@@ -48,6 +48,9 @@ $ bakery-oms
 > inventory
 ```
 ```sh
+> order <code-1> <quantity> [ <code-2> <quantity> ... ]
+```
+```sh
 > quit
 ```
 
