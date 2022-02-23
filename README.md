@@ -2,12 +2,10 @@
 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-
-
 This is my solution for a coding challenge presented by IBM Garage as part of their graduate hiring process.
 
 ## Requirements
-
+### Runtime + Package Manager
 This is a Node.js CLI application, therefore it requires `Node.js` and `npm` to be installed. This project was developed using the following versions:
 * `Node.js` v17.5.0
 * `npm` v8.5.1

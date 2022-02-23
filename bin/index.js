@@ -139,6 +139,49 @@ function showInventory (inventory) {
   }
 }
 
+/**
+ * Given an array A and a number N, calculate all possible subsets of A
+ * that add up to N.
+ * @param {options} arg An int array of arrays e.g. [[1, 2], ..., [3, 4]]
+ * @param {targetSum} arg A positive integer
+ * Time complexity: O(n * m * k), where 'n' = length of 'options',
+ * 'm' = 'targetSum', and k = 
+ */
+function perfectSubsetSum(options, targetSum) {
+  // Initialise an array of length targetSum + 1 with []
+  const matrix = Array(targetSum + 1).fill(null).map(() => [])
+  // Set index 0 as an empty array because all arrays have a subset
+  // that add up to zero (because of the empty set)
+  matrix[0] = [[]]
+
+  // For each option available in 'options' that adds up to 'targetSum',
+  // populate the matrix with that option at index i
+  options.forEach(option => {
+    for (let i = option[0]; i <= targetSum; ++i) {
+      matrix[i - option[0]].forEach(combination => {
+        matrix[i].push(combination.concat([option]))
+      })
+      console.log(matrix)
+    }
+  })
+  return matrix[targetSum]
+}
+
+function prepareOrder(orders, inventory){
+  const receipt = []
+  orders.forEach((order) => {
+    const productOrdered = order[0]
+    const quantityOrdered = order[1]
+    const filteredInventory = inventory.filter((product) => product.code === productOrdered)
+    const otherPackagingOptions = filteredInventory[0].packagingOptions.map((option) => [parseInt(option[0]), parseInt(option[1])])
+    const possibleCombinations = perfectSubsetSum(otherPackagingOptions, quantityOrdered)
+    const newEntry = {}
+    newEntry[productOrdered] = possibleCombinations.sort().sort((a, b) => a.length - b.length)[0]
+    receipt.push(newEntry)
+  })
+  return receipt
+}
+
 async function run () {
   const rl = readline.createInterface({ input, output })
 
@@ -169,6 +212,12 @@ async function run () {
               console.log(chalk.green('Loaded items successfully'))
             }
           }
+        } else if (command.startsWith('order ')) {
+          const orderPlaced = command.replace('order', '').trim()
+          if (isValid(orderPlaced)) {
+            const formattedOrder = formatOrder(orderPlaced)
+            const receipt = prepareOrder(formattedOrder)
+          }
         } else {
           console.error(chalk.red('Invalid command'))
         }
@@ -183,5 +232,6 @@ export {
   fileExists,
   loadProducts,
   consolidateProducts,
-  showInventory
+  showInventory,
+  prepareOrder
 }

@@ -98,3 +98,26 @@ describe('1. Load Products functionality', function () {
     })
   })
 })
+
+describe('2. Orders functionality', function () {
+  context('prepareOrder()', function () {
+    it('should be of type function', function () {
+      expect(typeof bakeryOms.prepareOrder).to.equal('function')
+    })
+    it('creates an optimal order', function () {
+      expect(bakeryOms.prepareOrder([
+        ['VS', 10],
+        ['BM', 14], 
+        ['CR', 13]
+      ], [
+        new Product('VS', [['3', '699'], ['5', '899']]),
+        new Product('BM', [['2', '995'], ['5', '1695'], ['8', '2495']]),
+        new Product('CR',[['3', '595'], ['5', '995'], ['9', '1699']])
+      ])).to.deep.equal([
+        { 'VS': [[ 5, 899 ], [ 5, 899 ]] },
+        { 'BM': [[ 2, 995 ], [ 2, 995 ], [ 2, 995 ], [ 8, 2495 ]] },
+        { 'CR': [[ 3, 595 ], [ 5, 995 ], [ 5, 995 ]] }
+      ])
+    })
+  })
+})
