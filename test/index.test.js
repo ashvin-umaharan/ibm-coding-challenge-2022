@@ -10,6 +10,23 @@ const expect = chai.expect
 
 process.env.NODE_ENV = 'test'
 
+const testRawInput = [
+  { code: 'VS', count: '3', price: '699' },
+  { code: 'VS', count: '5', price: '899' },
+  { code: 'BM', count: '2', price: '995' },
+  { code: 'BM', count: '5', price: '1695' },
+  { code: 'BM', count: '8', price: '2495' },
+  { code: 'CR', count: '3', price: '595' },
+  { code: 'CR', count: '5', price: '995' },
+  { code: 'CR', count: '9', price: '1699' }
+]
+
+const testInventory = [
+  new Product('VS', [['3', '699'], ['5', '899']]),
+  new Product('BM', [['2', '995'], ['5', '1695'], ['8', '2495']]),
+  new Product('CR',[['3', '595'], ['5', '995'], ['9', '1699']])
+]
+
 describe('1. Load Products functionality', function () {
   context('fileExists()', function () {
     it('should be of type function', function () {
@@ -34,28 +51,10 @@ describe('1. Load Products functionality', function () {
       await expect(bakeryOms.loadProducts('test/test_file_missing_column.csv')).to.be.rejected
     })
     it('should accept a valid CSV with different column names', async () => {
-      await expect(bakeryOms.loadProducts('test/test_file_diff_column_names.csv')).to.eventually.deep.equal([
-        { code: 'VS', count: '3', price: '699' },
-        { code: 'VS', count: '5', price: '899' },
-        { code: 'BM', count: '2', price: '995' },
-        { code: 'BM', count: '5', price: '1695' },
-        { code: 'BM', count: '8', price: '2495' },
-        { code: 'CR', count: '3', price: '595' },
-        { code: 'CR', count: '5', price: '995' },
-        { code: 'CR', count: '9', price: '1699' }
-      ])
+      await expect(bakeryOms.loadProducts('test/test_file_diff_column_names.csv')).to.eventually.deep.equal(testRawInput)
     })
     it('should accept a valid CSV with expected column names', async () => {
-      await expect(bakeryOms.loadProducts('test/test_file.csv')).to.eventually.deep.equal([
-        { code: 'VS', count: '3', price: '699' },
-        { code: 'VS', count: '5', price: '899' },
-        { code: 'BM', count: '2', price: '995' },
-        { code: 'BM', count: '5', price: '1695' },
-        { code: 'BM', count: '8', price: '2495' },
-        { code: 'CR', count: '3', price: '595' },
-        { code: 'CR', count: '5', price: '995' },
-        { code: 'CR', count: '9', price: '1699' }
-      ])
+      await expect(bakeryOms.loadProducts('test/test_file.csv')).to.eventually.deep.equal(testRawInput)
     })
   })
 
@@ -64,20 +63,7 @@ describe('1. Load Products functionality', function () {
       expect(typeof bakeryOms.consolidateProducts).to.equal('function')
     })
     it('correctly groups packaging options for each product', function () {
-      expect(bakeryOms.consolidateProducts([
-        { code: 'VS', count: '3', price: '699' },
-        { code: 'VS', count: '5', price: '899' },
-        { code: 'BM', count: '2', price: '995' },
-        { code: 'BM', count: '5', price: '1695' },
-        { code: 'BM', count: '8', price: '2495' },
-        { code: 'CR', count: '3', price: '595' },
-        { code: 'CR', count: '5', price: '995' },
-        { code: 'CR', count: '9', price: '1699' }
-      ])).to.deep.equal([
-        new Product('VS', [['3', '699'], ['5', '899']]),
-        new Product('BM', [['2', '995'], ['5', '1695'], ['8', '2495']]),
-        new Product('CR',[['3', '595'], ['5', '995'], ['9', '1699']])
-      ])
+      expect(bakeryOms.consolidateProducts(testRawInput)).to.deep.equal(testInventory)
     })
   })
 
@@ -89,32 +75,77 @@ describe('1. Load Products functionality', function () {
       expect(bakeryOms.showInventory(null)).to.deep.equal('The bakery is empty')
     })
     it('should show that the bakery is empty when the inventory is empty', function () {
-      expect(bakeryOms.showInventory([
-        new Product('VS', [['3', '699'], ['5', '899']]),
-        new Product('BM', [['2', '995'], ['5', '1695'], ['8', '2495']]),
-        new Product('CR',[['3', '595'], ['5', '995'], ['9', '1699']])
-      ])).to.deep.equal(
+      expect(bakeryOms.showInventory(testInventory)).to.deep.equal(
         `VS, options: 3 x $6.99, 5 x $8.99\nBM, options: 2 x $9.95, 5 x $16.95, 8 x $24.95\nCR, options: 3 x $5.95, 5 x $9.95, 9 x $16.99\n`)
     })
   })
 })
 
 describe('2. Orders functionality', function () {
+  context('isValidOrder()', function () {
+    it('should be of type function', function () {
+      expect(typeof bakeryOms.isValidOrder).to.equal('function')
+    })
+    it('should correctly detect valid orders', function () {
+      expect(bakeryOms.isValidOrder('VS 10 BM 14 CR 13', testInventory)).to.be.true
+    })
+    it('should correctly detect invalid order with missing quantity', function () {
+      expect(bakeryOms.isValidOrder('VS 10 BM 14 CR', testInventory)).to.be.false
+    })
+    it('should correctly detect invalid order with a zero quantity', function () {
+      expect(bakeryOms.isValidOrder('VS 10 BM 0 CR 13', testInventory)).to.be.false
+    })
+    it('should correctly detect invalid order with negative quantity', function () {
+      expect(bakeryOms.isValidOrder('VS 10 BM 14 CR -5', testInventory)).to.be.false
+    })
+    it('should correctly detect invalid order with invalid product code', function () {
+      expect(bakeryOms.isValidOrder('VS 10 BM 14 CM 13', testInventory)).to.be.false
+    })
+  })
+
+  context('formatOrder()', function () {
+    it('should be of type function', function () {
+      expect(typeof bakeryOms.formatOrder).to.equal('function')
+    })
+    it('should correctly format valid orders', function () {
+      expect(bakeryOms.formatOrder('VS 10 BM 14 CR 13')).to.deep.equal([ 
+        [ 'VS', 10 ], 
+        [ 'BM', 14 ], 
+        [ 'CR', 13 ] 
+      ])
+    })
+  })
+  
   context('prepareOrder()', function () {
     it('should be of type function', function () {
       expect(typeof bakeryOms.prepareOrder).to.equal('function')
     })
-    it('creates an optimal order', function () {
+    it('rejects orders with invalid quantities', function () {
+      expect(bakeryOms.prepareOrder([
+        ['VS', 1],
+        ['BM', 14], 
+        ['CR', 13]
+      ], testInventory)).to.be.rejected
+    })
+    it('creates an optimal receipt for order without duplicate products', function () {
       expect(bakeryOms.prepareOrder([
         ['VS', 10],
         ['BM', 14], 
         ['CR', 13]
-      ], [
-        new Product('VS', [['3', '699'], ['5', '899']]),
-        new Product('BM', [['2', '995'], ['5', '1695'], ['8', '2495']]),
-        new Product('CR',[['3', '595'], ['5', '995'], ['9', '1699']])
-      ])).to.deep.equal([
+      ], testInventory)).to.deep.equal([
         { 'VS': [[ 5, 899 ], [ 5, 899 ]] },
+        { 'BM': [[ 2, 995 ], [ 2, 995 ], [ 2, 995 ], [ 8, 2495 ]] },
+        { 'CR': [[ 3, 595 ], [ 5, 995 ], [ 5, 995 ]] }
+      ])
+    })
+    it('creates an optimal receipt for order with duplicate products', function () {
+      expect(bakeryOms.prepareOrder([
+        ['VS', 10],
+        ['BM', 14], 
+        ['CR', 13],
+        ['VS', 5]
+      ], testInventory)).to.deep.equal([
+        { 'VS': [[ 5, 899 ], [ 5, 899 ], [ 5, 899 ]] },
         { 'BM': [[ 2, 995 ], [ 2, 995 ], [ 2, 995 ], [ 8, 2495 ]] },
         { 'CR': [[ 3, 595 ], [ 5, 995 ], [ 5, 995 ]] }
       ])

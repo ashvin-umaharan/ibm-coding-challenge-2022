@@ -139,6 +139,45 @@ function showInventory (inventory) {
   }
 }
 
+function isValidOrder (commandArguments, inventory) {
+  const args = commandArguments.split(' ')
+  if (args.length % 2 !== 0) {
+    return false
+  } else {
+    let invalidQuantityFound = false
+    for (let i = 1; i < args.length; i += 2) {
+      if (isNaN(parseInt(args[i])) || parseInt(args[i]) <= 0) {
+        invalidQuantityFound = true
+      }
+    }
+    if (invalidQuantityFound) {
+      return false
+    } else {
+      let invalidProductCodeFound = false
+      const validProducts = inventory.map(product => product.code)
+      for (let i = 0; i < args.length; i += 2) {
+        if (!validProducts.includes(args[i])) {
+          invalidProductCodeFound = true
+        }
+      }
+      if (invalidProductCodeFound) { 
+        return false 
+      } else { 
+        return true 
+      }
+    }
+  }
+}
+
+function formatOrder (commandArguments) {
+  const args = commandArguments.split(' ')
+  const formattedArgs = []
+  for (let i = 0; i < args.length; i += 2) {
+    formattedArgs.push([args[i], parseInt(args[i + 1])])
+  }
+  return formattedArgs
+}
+
 /**
  * Given an array A and a number N, calculate all possible subsets of A
  * that add up to N.
@@ -161,7 +200,6 @@ function perfectSubsetSum(options, targetSum) {
       matrix[i - option[0]].forEach(combination => {
         matrix[i].push(combination.concat([option]))
       })
-      console.log(matrix)
     }
   })
   return matrix[targetSum]
@@ -180,6 +218,10 @@ function prepareOrder(orders, inventory){
     receipt.push(newEntry)
   })
   return receipt
+}
+
+function printReceipt () {
+  
 }
 
 async function run () {
@@ -214,9 +256,16 @@ async function run () {
           }
         } else if (command.startsWith('order ')) {
           const orderPlaced = command.replace('order', '').trim()
-          if (isValid(orderPlaced)) {
-            const formattedOrder = formatOrder(orderPlaced)
-            const receipt = prepareOrder(formattedOrder)
+          if (inventoryData !== null) {
+            if (isValidOrder(orderPlaced, inventoryData)) {
+              const formattedOrder = formatOrder(orderPlaced)
+              const receipt = prepareOrder(formattedOrder, inventoryData)
+              printReceipt(receipt)
+            } else {
+              console.error(chalk.red('Invalid order - please enter valid product codes and quantities > 0'))
+            }
+          } else {
+            console.error(chalk.red('The bakery is empty - please populate inventory using -> load <path/to/file.csv>'))
           }
         } else {
           console.error(chalk.red('Invalid command'))
@@ -233,5 +282,7 @@ export {
   loadProducts,
   consolidateProducts,
   showInventory,
+  isValidOrder,
+  formatOrder,
   prepareOrder
 }
