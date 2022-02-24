@@ -17,7 +17,13 @@ However, this project should still be able to be run without issues with the fol
 ### Third-Party Packages
 The following third-party `npm` packages have been utilised:
 * [`chalk`](https://github.com/chalk/chalk) ![npms.io (final)](https://img.shields.io/npms-io/final-score/chalk) ![node-current](https://img.shields.io/node/v/chalk) ![npm](https://img.shields.io/npm/v/chalk)
-* [`csv-parse`](https://github.com/adaltas/node-csv/tree/master/packages/csv-parse) ![npms.io (final)](https://img.shields.io/npms-io/final-score/csv-parse) ![node-current](https://img.shields.io/node/v/csv-parse) ![npm](https://img.shields.io/npm/v/csv-parse) 
+* [`csv-parse`](https://github.com/adaltas/node-csv/tree/master/packages/csv-parse) ![npms.io (final)](https://img.shields.io/npms-io/final-score/csv-parse) ![node-current](https://img.shields.io/node/v/csv-parse) ![npm](https://img.shields.io/npm/v/csv-parse)
+
+#### Dev Dependencies
+The following third-party `npm` packages have been utilised for testing:
+* [`mocha`](https://github.com/mochajs/mocha) ![npms.io (final)](https://img.shields.io/npms-io/final-score/mocha) ![node-current](https://img.shields.io/node/v/mocha) ![npm](https://img.shields.io/npm/v/mocha)
+* [`chai`](https://github.com/chaijs/chai) ![npms.io (final)](https://img.shields.io/npms-io/final-score/chai) ![node-current](https://img.shields.io/node/v/chai) ![npm](https://img.shields.io/npm/v/chai)
+* [`chai-as-promised`](https://github.com/domenic/chai-as-promised) ![npms.io (final)](https://img.shields.io/npms-io/final-score/chai-as-promised) ![node-current](https://img.shields.io/node/v/chai-as-promised) ![npm](https://img.shields.io/npm/v/chai-as-promised)
 
 ## Installation
 
