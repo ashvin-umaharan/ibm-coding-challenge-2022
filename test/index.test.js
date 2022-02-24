@@ -213,11 +213,11 @@ describe('2. Orders functionality', function () {
     it('should be of type function', function () {
       expect(typeof bakeryOms.printReceipt).to.equal('function')
     })
-    it('should show that the bakery is empty when the inventory is empty', function () {
+    it('should correctly produce a receipt for an order with valid combinations', function () {
       expect(bakeryOms.printReceipt(testReceipt)).to.deep.equal(
         'VS, $17.98, packages: 2x5\nBM, $54.8, packages: 3x2, 1x8\nCR, $25.85, packages: 1x3, 2x5\n')
     })
-    it('should show that the bakery is empty when the inventory is empty', function () {
+    it('should correctly produce a receipt for an order with invalid combinations', function () {
       expect(bakeryOms.printReceipt(testReceiptWithError)).to.deep.equal(
         'VS, N/A, packages: no valid combination of packages exist - please contact bakery for a custom order\nBM, $54.8, packages: 3x2, 1x8\nCR, $25.85, packages: 1x3, 2x5\n')
     })
