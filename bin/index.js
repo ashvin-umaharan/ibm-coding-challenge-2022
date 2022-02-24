@@ -262,7 +262,7 @@ function perfectSubsetSum (options, targetSum) {
   // For each option available in 'options' where the quantity adds up to 'targetSum',
   // populate the matrix with that option at index i
   options.forEach(option => {
-    for (let i = option[0]; i <= targetSum; ++i) {
+    for (let i = option[0]; i <= targetSum; i++) {
       matrix[i - option[0]].forEach(combination => {
         matrix[i].push(combination.concat([option]))
       })
