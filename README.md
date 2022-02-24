@@ -1,6 +1,6 @@
 # ibm-coding-challenge-2022
 
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+![GitHub](https://img.shields.io/github/license/ashvin-umaharan/ibm-coding-challenge-2022) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ashvin-umaharan/ibm-coding-challenge-2022) ![Lines of code](https://img.shields.io/tokei/lines/github/ashvin-umaharan/ibm-coding-challenge-2022)
 
 This is my solution for a coding challenge presented by IBM Garage as part of their graduate hiring process.
 
